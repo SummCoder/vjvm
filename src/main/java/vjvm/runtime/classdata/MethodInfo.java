@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import vjvm.classfiledefs.MethodDescriptors;
 import vjvm.runtime.JClass;
 import vjvm.runtime.classdata.attribute.Attribute;
+import vjvm.runtime.classdata.constant.UTF8Constant;
 import vjvm.runtime.classdata.attribute.Code;
 import vjvm.utils.UnimplementedError;
 
@@ -30,7 +31,24 @@ public class MethodInfo {
 
   @SneakyThrows
   public MethodInfo(DataInput dataInput, JClass jClass) {
-    throw new UnimplementedError("TODO: Get method information from constant pool");
+    ConstantPool constantPool = jClass.constantPool();
+
+    this.jClass = jClass;
+    accessFlags = dataInput.readShort();
+
+    int nameIndex = dataInput.readUnsignedShort();
+    name = ((UTF8Constant) constantPool.constant(nameIndex)).value();
+
+    int descIndex = dataInput.readUnsignedShort();
+    descriptor = ((UTF8Constant) constantPool.constant(descIndex)).value();
+
+    int attributesCount = dataInput.readUnsignedShort();
+    attributes = new Attribute[attributesCount];
+
+    for (int i = 0; i < attributesCount; ++i)
+      attributes[i] = Attribute.constructFromData(dataInput, constantPool);
+
+//    throw new UnimplementedError("TODO: Get method information from constant pool");
   }
 
   public int argc() {

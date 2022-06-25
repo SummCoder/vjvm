@@ -9,6 +9,8 @@ import vjvm.vm.VMContext;
 import vjvm.utils.UnimplementedError;
 
 import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 
 public class JClassLoader implements Closeable {
@@ -32,8 +34,27 @@ public class JClassLoader implements Closeable {
    * Otherwise, return null.
    */
   public JClass loadClass(String descriptor) {
-    throw new UnimplementedError("TODO: load class");
+//    throw new UnimplementedError("TODO: load class");
+    assert descriptor.charAt(descriptor.length() - 1) == ';';
 
+    JClass jClass;
+    if (parent != null
+    && (jClass = parent.loadClass(descriptor)) != null){
+      return jClass;
+    }
+
+    if ((jClass = definedClass.get(descriptor)) != null){
+      return jClass;
+    }
+
+    var name = descriptor.substring(1, descriptor.length() - 1);
+    for (var p : searchPaths){
+      var iStream = p.findClass(name);
+      if (iStream != null){
+        return defineNonarrayClass(descriptor,iStream);
+      }
+    }
+    return null;
     // To construct a JClass, use the following constructor
     // return new JClass(new DataInputStream(istream_from_file), this);
   }
@@ -43,5 +64,11 @@ public class JClassLoader implements Closeable {
   public void close() {
     for (var s : searchPaths)
       s.close();
+  }
+
+  private JClass defineNonarrayClass(String descriptor, InputStream data){
+    var ret = new JClass(new DataInputStream(data), this);
+    definedClass.put(descriptor,ret);
+    return ret;
   }
 }

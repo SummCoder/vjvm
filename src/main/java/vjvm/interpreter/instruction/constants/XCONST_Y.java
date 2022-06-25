@@ -26,7 +26,7 @@ public class XCONST_Y<T> extends Instruction {
   }
 
   public static final XCONST_Y<Integer> ICONST_1(ProgramCounter pc, MethodInfo method) {
-    return new XCONST_Y<Integer>(-1, OperandStack::pushInt, "iconst_1");
+    return new XCONST_Y<Integer>(1, OperandStack::pushInt, "iconst_1");
   }
 
   public static final XCONST_Y<Integer> ICONST_2(ProgramCounter pc, MethodInfo method) {
