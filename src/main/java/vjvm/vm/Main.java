@@ -4,6 +4,8 @@ import lombok.var;
 import picocli.CommandLine;
 import vjvm.classfiledefs.Descriptors;
 import vjvm.runtime.JClass;
+import vjvm.runtime.classdata.constant.DoubleConstant;
+import vjvm.runtime.classdata.constant.LongConstant;
 import vjvm.utils.UnimplementedError;
 
 import java.util.concurrent.Callable;
@@ -77,6 +79,43 @@ class Dump implements Callable<Integer> {
   }
 
   private void dump(JClass clazz) {
-    throw new UnimplementedError("TODO: dump clazz in lab 1.2; remove this for 1.1");
+    var out = System.out;
+
+    out.printf(
+      "\nclass name: %s\nminor version: %d\nmajor version: %d\nflags: 0x%x\nthis class: %s\nsuper class: %s\n\n",
+      clazz.name(), clazz.minorVersion(), clazz.majorVersion(), clazz.accessFlags(), clazz.thisClass().name(), clazz.superClass().name());
+
+    out.printf("\nconstant pool:\n");
+    var p = clazz.constantPool();
+    for (int i = 1; i < p.size();){
+      var v = p.constant(i);
+      out.printf("#%d = %s\n", i, v);
+
+      int size = 1;
+      if (v instanceof LongConstant || v instanceof DoubleConstant){
+        size = 2;
+      }
+      i += size;
+    }
+
+    out.printf("\ninterfaces:\n");
+    for (int i = 0; i < clazz.superInterfaceCount(); i++){
+      var s = clazz.superInterface(i);
+      out.printf("%s\n", s.name());
+    }
+
+    out.printf("\nfields:\n");
+    for (int i = 0; i < clazz.fieldsCount(); i++){
+      var f = clazz.field(i);
+      out.printf("%s(0x%x): %s\n",f.name(), f.accessFlags(), f.descriptor());
+    }
+
+    out.printf("\nmethods:\n");
+    for (int i = 0; i < clazz.methodsCount(); i++){
+      var m = clazz.method(i);
+      out.printf("%s(0x%x): %s\n", m.name(), m.accessFlags(), m.descriptor());
+    }
+
+//    throw new UnimplementedError("TODO: dump clazz in lab 1.2; remove this for 1.1");
   }
 }
