@@ -29,7 +29,6 @@ public class JFrame {
       pc = new ProgramCounter(code.code());
       vars = new Slots(code.maxLocals());
     }
-
     args.copyTo(0, args.size(), vars, 0);
   }
 }

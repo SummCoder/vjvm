@@ -87,6 +87,14 @@ public class JClass {
 //        + "Some of them are not defined; you need to define them yourself");
   }
 
+  public MethodInfo findMethod(String name, String descriptor) {
+    for (var method : methods)
+      if (method.name().equals(name) && method.descriptor().equals(descriptor))
+        return method;
+
+    return null;
+  }
+
   public boolean public_() {
     return (accessFlags & ACC_PUBLIC) != 0;
   }
@@ -143,8 +151,8 @@ public class JClass {
     return interfaces.length;
   }
 
-  public ClassRef superInterface(int i) {
-    return interfaces[i];
+  public ClassRef superInterface(int index) {
+    return interfaces[index];
   }
 
   public String name() {

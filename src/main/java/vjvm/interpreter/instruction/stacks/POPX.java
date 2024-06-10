@@ -1,0 +1,38 @@
+package vjvm.interpreter.instruction.stacks;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import vjvm.interpreter.instruction.Instruction;
+import vjvm.runtime.JThread;
+import vjvm.runtime.OperandStack;
+import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.Slots;
+import vjvm.runtime.classdata.MethodInfo;
+
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class POPX extends Instruction {
+  private final Function<OperandStack, Slots> popFunc;
+  private final String name;
+
+  public static POPX POP(ProgramCounter pc, MethodInfo method){
+    return new POPX(s -> s.popSlots(1), "pop");
+  }
+
+  public static POPX POP2(ProgramCounter pc, MethodInfo method){
+    return new POPX(s -> s.popSlots(2), "pop2");
+  }
+  @Override
+  public void run(JThread thread){
+    OperandStack stack = thread.top().stack();
+    popFunc.apply(stack);
+  }
+
+  @Override
+  public String toString(){
+    return "popx";
+  }
+}
+

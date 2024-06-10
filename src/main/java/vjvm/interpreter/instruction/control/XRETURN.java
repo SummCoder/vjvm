@@ -7,6 +7,7 @@ import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
 import vjvm.runtime.OperandStack;
 import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.Slots;
 import vjvm.runtime.classdata.MethodInfo;
 
 import java.util.function.BiConsumer;
@@ -22,6 +23,26 @@ public class XRETURN<T> extends Instruction {
   public static XRETURN<Void> RETURN(ProgramCounter pc, MethodInfo method) {
     return new XRETURN<>(s -> null, Function.identity(), null, "return");
   }
+
+
+  public static XRETURN<Integer> IRETURN(ProgramCounter pc, MethodInfo method) {
+    return new XRETURN<>(OperandStack::popInt, Function.identity(), OperandStack::pushInt, "ireturn");
+  }
+
+
+  public static XRETURN<Long> LRETURN(ProgramCounter pc, MethodInfo method) {
+    return new XRETURN<>(OperandStack::popLong, Function.identity(), OperandStack::pushLong, "lreturn");
+  }
+
+
+  public static XRETURN<Float> FETURN(ProgramCounter pc, MethodInfo method) {
+    return new XRETURN<>(OperandStack::popFloat, Function.identity(), OperandStack::pushFloat, "freturn");
+  }
+
+  public static XRETURN<Double> DETURN(ProgramCounter pc, MethodInfo method) {
+    return new XRETURN<>(OperandStack::popDouble, Function.identity(), OperandStack::pushDouble, "dreturn");
+  }
+
 
   @Override
   public void run(JThread thread) {

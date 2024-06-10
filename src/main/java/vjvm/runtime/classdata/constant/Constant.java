@@ -55,8 +55,8 @@ public abstract class Constant {
 //        result = new FiledRef(input, jClass);
 //        break;
       case CONSTANT_Methodref:
-//        result = new MethodRef(input, jClass, false);
-//        break;
+        result = new MethodRef(input, jClass, false);
+        break;
       case CONSTANT_InterfaceMethodref:
       case CONSTANT_Dynamic:
       case CONSTANT_InvokeDynamic:

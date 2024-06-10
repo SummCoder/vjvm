@@ -20,6 +20,24 @@ public class Code extends Attribute {
   @SneakyThrows
   Code(DataInput input, ConstantPool constantPool) {
     // TODO: construct code
-    throw new UnimplementedError();
+//    throw new UnimplementedError();
+    maxStack = input.readUnsignedShort();
+    maxLocals = input.readUnsignedShort();
+
+    int codeLength = input.readInt();
+    code = new byte[codeLength];
+    input.readFully(code);
+
+    int exceptionTableLength = input.readUnsignedShort();
+    byte[] ignore = new byte[8];
+    for (int i = 0; i < exceptionTableLength; ++i){
+      input.readFully(ignore);
+    }
+
+    int attributesCount = input.readUnsignedShort();
+    attributes = new Attribute[attributesCount];
+    for (int i = 0; i < attributesCount; ++i){
+      attributes[i] = constructFromData(input, constantPool);
+    }
   }
 }

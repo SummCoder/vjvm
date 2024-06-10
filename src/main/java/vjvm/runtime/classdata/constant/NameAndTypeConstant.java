@@ -35,6 +35,11 @@ public class NameAndTypeConstant extends Constant {
     return descriptor;
   }
 
+  public Pair<String, String> value(){
+    return Pair.of(name(), type());
+  }
+
+
   @Override
   public String toString() {
     return String.format("NameAndType: %s:%s", name(), type());

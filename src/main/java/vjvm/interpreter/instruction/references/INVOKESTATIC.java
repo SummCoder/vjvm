@@ -16,8 +16,8 @@ public class INVOKESTATIC extends Instruction {
     // TODO: decode invokestatic
 //    throw new UnimplementedError();
     var cp = method.jClass().constantPool();
-    var methoRef = (MethodRef) cp.constant(pc.ushort());
-    this.method = methoRef.value();
+    var methodRef = (MethodRef) cp.constant(pc.ushort());
+    this.method = methodRef.value();
   }
 
   @Override

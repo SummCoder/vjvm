@@ -39,15 +39,21 @@ public class MethodInfo {
     int nameIndex = dataInput.readUnsignedShort();
     name = ((UTF8Constant) constantPool.constant(nameIndex)).value();
 
-    int descIndex = dataInput.readUnsignedShort();
-    descriptor = ((UTF8Constant) constantPool.constant(descIndex)).value();
+    int descriptionIndex = dataInput.readUnsignedShort();
+    descriptor = ((UTF8Constant) constantPool.constant(descriptionIndex)).value();
 
-    int attributesCount = dataInput.readUnsignedShort();
-    attributes = new Attribute[attributesCount];
+    int attrCount = dataInput.readUnsignedShort();
+    attributes = new Attribute[attrCount];
 
-    for (int i = 0; i < attributesCount; ++i)
+    for (int i = 0; i < attrCount; ++i)
       attributes[i] = Attribute.constructFromData(dataInput, constantPool);
 
+    for (Attribute i : attributes){
+      if (i instanceof Code){
+        code = (Code) i;
+        break;
+      }
+    }
 //    throw new UnimplementedError("TODO: Get method information from constant pool");
   }
 
